@@ -50,7 +50,7 @@ if (isset($_POST['update'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student CRUD</title>
+    <title>Viraj 1032240027 CRUD</title>
     <style>
         body { font-family: Arial; background:#f4f4f4; padding:20px; }
         form { background:#fff; padding:20px; width:300px; }

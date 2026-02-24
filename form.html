@@ -1,0 +1,189 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+  <meta charset="UTF-8" /> 
+  <title>Advanced Tailwind Form Validation</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+ 
+  <!-- Tailwind CDN --> 
+  <script src="https://cdn.tailwindcss.com"></script> 
+</head> 
+ 
+<body class="min-h-screen bg-slate-950 flex items-center justify-center px-4"> 
+ 
+  <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl"> 
+    <h2 class="text-2xl font-bold text-blue-400 text-center mb-6"> 
+      Registration Form 
+    </h2> 
+ 
+    <form id="form" novalidate> 
+ 
+      <!-- Name --> 
+      <div class="mb-5"> 
+        <label class="block text-sm text-slate-300 mb-1">Full Name</label> 
+        <input 
+          type="text" 
+          id="name" 
+          class="w-full px-4 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white focus:outline-none 
+focus:ring-2 focus:ring-blue-500" 
+          placeholder="Viraj Patil" 
+        /> 
+        <p id="nameError" class="text-red-400 text-sm mt-1 hidden"></p> 
+      </div> 
+ 
+      <!-- Email --> 
+      <div class="mb-5"> 
+        <label class="block text-sm text-slate-300 mb-1">Email</label> 
+        <input 
+          type="email" 
+          id="email" 
+          class="w-full px-4 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white focus:outline-none 
+focus:ring-2 focus:ring-blue-500" 
+          placeholder="viraj.patil1@mitwpu.edu.in" 
+        /> 
+        <p id="emailError" class="text-red-400 text-sm mt-1 hidden"></p> 
+      </div> 
+ 
+      <!-- Phone --> 
+      <div class="mb-5"> 
+        <label class="block text-sm text-slate-300 mb-1">Mobile Number</label> 
+        <input 
+          type="text" 
+          id="phone" 
+          class="w-full px-4 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white focus:outline-none 
+focus:ring-2 focus:ring-blue-500" 
+          placeholder="10-digit mobile number" 
+        /> 
+        <p id="phoneError" class="text-red-400 text-sm mt-1 hidden"></p> 
+      </div> 
+ 
+      <!-- Password --> 
+      <div class="mb-5"> 
+        <label class="block text-sm text-slate-300 mb-1">Password</label> 
+        <input 
+          type="password" 
+          id="password" 
+          class="w-full px-4 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white focus:outline-none 
+focus:ring-2 focus:ring-blue-500" 
+          placeholder="Strong password" 
+        /> 
+        <p id="passwordError" class="text-red-400 text-sm mt-1 hidden"></p> 
+ 
+        <!-- Strength Meter --> 
+        <div class="mt-2 h-2 bg-slate-800 rounded"> 
+          <div id="strengthBar" class="h-full rounded w-0 bg-red-500 transition-all"></div> 
+        </div> 
+      </div> 
+ 
+      <!-- Confirm Password --> 
+      <div class="mb-6"> 
+        <label class="block text-sm text-slate-300 mb-1">Confirm Password</label> 
+        <input 
+          type="password" 
+          id="confirmPassword" 
+          class="w-full px-4 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white focus:outline-none 
+focus:ring-2 focus:ring-blue-500" 
+        /> 
+        <p id="confirmError" class="text-red-400 text-sm mt-1 hidden"></p> 
+      </div> 
+ 
+      <button 
+        type="submit" 
+        class="w-full bg-blue-600 hover:bg-blue-500 text-black font-semibold py-2 rounded-lg transition" 
+      > 
+        Register 
+      </button> 
+ 
+      <p id="successMsg" class="text-green-400 text-center mt-4 hidden"> 
+        Form submitted successfully! 
+      </p> 
+ 
+    </form> 
+  </div> 
+ 
+  <!-- JavaScript Validation --> 
+  <script> 
+    const form = document.getElementById("form"); 
+ 
+    const validators = { 
+      name: value => /^[A-Za-z ]{3,}$/.test(value), 
+      email: value => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value), 
+      phone: value => /^[6-9]\\d{9}$/.test(value), 
+      password: value => 
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$/.test(value) 
+    }; 
+ 
+    function showError(id, msg) { 
+      const el = document.getElementById(id); 
+      el.textContent = msg; 
+      el.classList.remove("hidden"); 
+    } 
+ 
+    function hideError(id) { 
+      document.getElementById(id).classList.add("hidden"); 
+    } 
+ 
+    // Password strength 
+    document.getElementById("password").addEventListener("input", e => { 
+      const value = e.target.value; 
+      const bar = document.getElementById("strengthBar"); 
+ 
+      let strength = 0; 
+      if (/[a-z]/.test(value)) strength++; 
+      if (/[A-Z]/.test(value)) strength++; 
+      if (/\d/.test(value)) strength++; 
+      if (/[@$!%*?&]/.test(value)) strength++; 
+ 
+      bar.style.width = `${strength * 25}%`; 
+      bar.className = "h-full rounded transition-all " + 
+        (strength <= 1 ? "bg-red-500" : 
+         strength === 2 ? "bg-yellow-500" : 
+         strength === 3 ? "bg-blue-500" : 
+                          "bg-green-500"); 
+    }); 
+ 
+    form.addEventListener("submit", e => { 
+      e.preventDefault(); 
+      let valid = true; 
+ 
+      const name = form.name.value.trim(); 
+      const email = form.email.value.trim(); 
+      const phone = form.phone.value.trim(); 
+      const password = form.password.value; 
+      const confirm = form.confirmPassword.value; 
+ 
+      if (!validators.name(name)) { 
+        showError("nameError", "Name must be at least 3 letters."); 
+        valid = false; 
+      } else hideError("nameError"); 
+ 
+      if (!validators.email(email)) { 
+        showError("emailError", "Invalid email format."); 
+        valid = false; 
+      } else hideError("emailError"); 
+ 
+      if (!validators.phone(phone)) { 
+        showError("phoneError", "Enter a valid 10-digit Indian number."); 
+        valid = false; 
+      } else hideError("phoneError"); 
+ 
+      if (!validators.password(password)) { 
+        showError("passwordError", "Password must be strong."); 
+        valid = false; 
+      } else hideError("passwordError"); 
+ 
+      if (password !== confirm) { 
+        showError("confirmError", "Passwords do not match."); 
+        valid = false; 
+      } else hideError("confirmError"); 
+ 
+      if (valid) { 
+        document.getElementById("successMsg").classList.remove("hidden"); 
+        form.reset(); 
+        document.getElementById("strengthBar").style.width = "0"; 
+      } 
+    }); 
+  </script> 
+ 
+</body> 
+</html>
